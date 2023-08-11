@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+    <script>
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
+
+      function init() {
+          
+          
+          // キューブマップ
+          var cubeMap = {
+            path: './cubemap/',
+            urls: [ 'sango_r.png', 'sango_l.png','sango_u.png', 'sango_d.png','sango_f.png','sango_b.png' ]
+          }
+          
+        // サイズを指定
+        const width = 1024;
+        const height = 768;
+        let rot = 0;
+
+        // レンダラーを作成
+        const canvasElement = document.querySelector('#myCanvas');
+        const renderer = new THREE.WebGLRenderer({
+          canvas: canvasElement,
+          antialias: true
+        });
+        renderer.setSize(width, height);
+        renderer.setClearColor(0xFFFFFF, 1.0);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+        
+        // シーンの背景にキューブマップを設定する。
+        scene.background = new THREE.CubeTextureLoader().setPath(cubeMap.path).load(cubeMap.urls);
+
+
+        /* カメラを作成 (マウスに連動するカメラ）
+        camera = new THREE.PerspectiveCamera( 45 , width / height , 1 , 10000 );
+        camera.position.x = 20;  // 見る位置 x
+        camera.position.y = 15;  // 見る位置 y
+        camera.position.z = 50;  // 見る位置 z
+        
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt( {x:0, y:0, z:0 } );  // 見る方向
+
+        const controls = new THREE.OrbitControls(camera, canvasElement);*/
+        
+        const camera = new THREE.PerspectiveCamera(75 , width / height , 1 , 10000);
+        
+        //引数は半径, 横方向を何面にするか, 縦方向を何面にするか
+        var sphereGeometry = new THREE.SphereBufferGeometry(300, 36, 36);
+        // マテリアルに環境マッピングを設定する。（シーンの背景）
+        var sphereMaterial = new THREE.MeshBasicMaterial({ envMap: scene.background });
+        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(sphere);
+
+        document.body.appendChild(renderer.domElement);
+
+        
+        //ライトの作成
+        var light;
+        //function initLight() {
+          light = new THREE.DirectionalLight(0xFFFFFF, 1.0, 0);
+          light.position.set( 100, 100, 200 );
+          scene.add(light);
+        //}
+
+
+  /* ------------------------------------------------------------------------------ */
+
+
+    
+        
+        /*魚の作成*/
+        var fish1 = new THREE.Mesh(
+                                  new THREE.CylinderGeometry(20,80,80,100),
+                                  new THREE.MeshLambertMaterial({color: 0xE0FFFF})
+                          );
+        scene.add(fish1);
+        fish1.position.set(-600,500,-200);
+        fish1.rotation.set(Math.PI/2,0,0);
+        
+        var fish2 = new THREE.Mesh(
+                                  new THREE.CylinderGeometry(30,80,200,200),
+                                  new THREE.MeshLambertMaterial({color: 0x00FFFF})
+                          );
+        scene.add(fish2);
+        fish2.position.set(-600,500,-340);
+        fish2.rotation.set(-Math.PI/2,0,0);
+        
+        //手前の目
+        var eye1 = new THREE.Mesh(
+                                  new THREE.SphereGeometry(20,20,30),
+                                  new THREE.MeshLambertMaterial({color: 0xFFFFFF})
+                          );
+        scene.add(eye1);
+        eye1.position.set(-550,510,-200);
+        eye1.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        var eye2 = new THREE.Mesh(
+                                  new THREE.SphereGeometry(10,10,10),
+                                  new THREE.MeshLambertMaterial({color: 0x000000})
+                          );
+        scene.add(eye2);
+        eye2.position.set(-538,510,-200);
+        eye2.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        //奥の目
+        var eye3 = new THREE.Mesh(
+                                  new THREE.SphereGeometry(20,20,30),
+                                  new THREE.MeshLambertMaterial({color: 0xFFFFFF})
+                          );
+        scene.add(eye3);
+        eye3.position.set(-640,510,-200);
+        eye3.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        var eye4 = new THREE.Mesh(
+                                  new THREE.SphereGeometry(10,10,10),
+                                  new THREE.MeshLambertMaterial({color: 0x000000})
+                          );
+        scene.add(eye4);
+        eye4.position.set(-655,515,-200);
+        eye4.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        //魚の口
+        var mouthup = new THREE.Mesh(
+                                  new THREE.CylinderGeometry(13,13,43,100),
+                                  new THREE.MeshLambertMaterial({color: 0xFFFFFF})
+                          );
+        scene.add(mouthup);
+        mouthup.position.set(-600,510,-160);
+        mouthup.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        var mouthdown = new THREE.Mesh(
+                                  new THREE.CylinderGeometry(13,13,43,100),
+                                  new THREE.MeshLambertMaterial({color: 0xFFFFFF})
+                          );
+        scene.add(mouthdown);
+        mouthdown.position.set(-600,490,-160);
+        mouthdown.rotation.set(Math.PI/4.0,0,Math.PI/2.0);
+        
+        
+        var hire1= new THREE.Mesh(
+                                  new THREE.PlaneGeometry(60,50,100),
+                                  new THREE.MeshLambertMaterial({color: 0xE0FFFF})
+                          );
+        scene.add(hire1);
+        hire1.position.set(-540,500,-340);
+        hire1.rotation.set(0,Math.PI/2.0,0);
+        
+        var hire2= new THREE.Mesh(
+                                  new THREE.PlaneGeometry(60,50,100),
+                                  new THREE.MeshLambertMaterial({color: 0xE0FFFF})
+                          );
+        scene.add(hire2);
+        hire2.position.set(-665,500,-340);
+        hire2.rotation.set(0,Math.PI/2.0,0);
+        
+        
+        var fish3 = new THREE.Mesh(
+                                  new THREE.CylinderGeometry(25,40,55,200),
+                                  new THREE.MeshLambertMaterial({color: 0xE0FFFF})
+                          );
+        scene.add(fish3);
+        fish3.position.set(-600,500,-465);
+        fish3.rotation.set(Math.PI/2,0,0);
+      
+        
+        
+       
+       var sphere = Array();
+       
+         for(var i=0; i<300; i++){
+          
+          sphere[i] = new THREE.Mesh(
+                //Math.random() * ( 最大値 - 最小値 ) + 最小値;
+                new THREE.SphereGeometry(Math.random()*(20-5)+5,30,30), //形状の設定
+                new THREE.MeshLambertMaterial({
+                    color: 0xcccc,
+                    opacity: 0.6,
+                    transparent: true
+                }) //材質の設定
+                                      
+           );
+           scene.add(sphere[i]);
+           sphere[i].position.set(Math.random()*(width+1000)-1000,
+                                  Math.random()*(height+1000)-1000,
+                                  Math.random()*(width+1000)-1000);
+         }
+       
+
+        
+
+        tick();
+        
+        var up = 1;
+
+        // 毎フレーム時に実行されるループイベント
+        function tick() {
+            
+          renderer.clear();
+          rot += 0.05; // 毎フレーム角度を0.05度ずつ足していく
+                    // ラジアンに変換する
+                    const radian = (rot * Math.PI) / 180;
+                    // 角度に応じてカメラの位置を設定
+                    camera.position.x = 1000 * Math.sin(radian);
+                    camera.position.z = 1000 * Math.cos(radian);
+                    // 原点方向を見つめる
+                    camera.lookAt(new THREE.Vector3(0, 0, 0));
+                    
+                    //角度に応じて光の位置を調整
+                    light.position.x = 1000 * Math.sin(radian);
+                    light.position.z = 1000 * Math.cos(radian);
+          
+          for(var i=0;i<300;i++){
+          //sphere[i].position.x += (-Math.random()*(-1));
+          sphere[i].position.y += (Math.random()*2);
+          //sphere[i].position.z += (Math.random()*(-1));
+          
+          if((sphere[i].position.y) > height){
+              sphere[i].position.set(Math.random()*(width+1000)-1000,
+                                     Math.random()*(height+1000)-1000,
+                                     Math.random()*(width+1000)-1000);
+            }
+          }
+          
+          //魚の口を動かす
+          if(up == 0){
+              mouthdown.position.y += 0.1;
+              }
+          if(up == 1){
+              mouthdown.position.y -= 0.1;
+              }
+          
+          if(up == 1){
+              mouthup.position.y += 0.1;
+              if(mouthup.position.y > 515){
+                  up = 0;
+              }
+              }
+          if(up == 0){
+              mouthup.position.y -= 0.1;
+              if(mouthup.position.y < 508){
+                  up = 1;
+              }
+          }
+          
+          
+          
+         
+          // レンダリング
+          renderer.render(scene, camera);
+          requestAnimationFrame(tick);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+  </body>
+</html>
